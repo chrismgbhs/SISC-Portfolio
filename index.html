@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chris' SISC Hallmarks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #f5f4f0;
+      --gray: #888;
+      --border: 1px solid #0a0a0a;
+      --font-display: 'Cormorant Garamond', serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ─── LOADER ─── */
+    #loader {
+      position: fixed; inset: 0;
+      background: var(--black);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    #loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .loader-text {
+      font-family: var(--font-display);
+      font-size: clamp(1.5rem, 5vw, 3rem);
+      font-weight: 300;
+      color: var(--white);
+      letter-spacing: 0.3em;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+    /* ─── HEADER ─── */
+    header {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 2.5rem;
+      background: var(--white);
+      border-bottom: var(--border);
+      transition: all 0.3s ease;
+    }
+    .logo {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      color: var(--black);
+    }
+    .logo span { font-style: italic; font-weight: 300; }
+    nav { display: flex; gap: 0; }
+    nav a {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--gray);
+      padding: 0.4rem 1rem;
+      border-left: var(--border);
+      transition: color 0.2s, background 0.2s;
+    }
+    nav a:last-child { border-right: var(--border); }
+    nav a:hover, nav a.active { color: var(--black); background: var(--black); color: var(--white); }
+
+    /* ─── PAGES ─── */
+    .page { display: none; padding-top: 64px; min-height: 100vh; }
+    .page.active { display: block; }
+
+    /* ─── HERO (HOME) ─── */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: calc(100vh - 64px);
+      border-bottom: var(--border);
+    }
+    .hero-left {
+      padding: 5rem 4rem;
+      border-right: var(--border);
+      display: flex; flex-direction: column; justify-content: space-between;
+      animation: fadeUp 0.8s ease both;
+    }
+    .hero-eyebrow {
+      font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray);
+      margin-bottom: 1rem;
+    }
+    .hero-name {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
+    }
+    .hero-name em { display: block; font-style: italic; }
+    .hero-desc {
+      max-width: 380px;
+      color: #444;
+      line-height: 1.8;
+      margin-bottom: 3rem;
+      font-size: 12px;
+    }
+    .hero-tag {
+      display: inline-block;
+      font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+      border: var(--border); padding: 0.5rem 1.2rem;
+    }
+    .hero-right {
+      position: relative;
+      overflow: hidden;
+      background: var(--black);
+      animation: fadeIn 1s ease 0.3s both;
+    }
+    .hero-right::before {
+      content: 'SISC HALLMARKS';
+      position: absolute; top: 2rem; right: 2rem;
+      font-size: 10px; letter-spacing: 0.2em;
+      color: #555; writing-mode: vertical-rl;
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .hero-center-text {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      text-align: center; color: var(--white);
+    }
+    .hero-center-text h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 4.5rem);
+      font-weight: 300; font-style: italic;
+      line-height: 1.1;
+      opacity: 0.9;
+    }
+    .hero-center-text p {
+      margin-top: 1rem; font-size: 11px; letter-spacing: 0.15em;
+      text-transform: uppercase; color: #888;
+    }
+
+    /* intro section */
+    .intro-section {
+      display: grid; grid-template-columns: 1fr 2fr;
+      border-bottom: var(--border);
+    }
+    .intro-label {
+      padding: 3rem 2.5rem;
+      border-right: var(--border);
+      font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray);
+      writing-mode: vertical-rl;
+      display: flex; align-items: flex-start;
+    }
+    .intro-body {
+      padding: 3rem 4rem;
+    }
+    .intro-body p {
+      font-family: var(--font-display);
+      font-size: 1.3rem; font-weight: 300;
+      line-height: 1.7; color: #222;
+      max-width: 600px;
+    }
+
+    /* ─── ACHIEVEMENTS ─── */
+    .page-header {
+      padding: 4rem 4rem 2rem;
+      border-bottom: var(--border);
+      animation: fadeUp 0.6s ease both;
+    }
+    .page-header-eyebrow {
+      font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray);
+      margin-bottom: 0.8rem;
+    }
+    .page-header h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 300; line-height: 1;
+    }
+
+    .achievements-list { animation: fadeUp 0.6s ease 0.1s both; }
+    .achievement-item {
+      display: grid; grid-template-columns: 120px 1fr;
+      border-bottom: var(--border);
+      transition: background 0.2s;
+    }
+    .achievement-item:hover { background: #f0efeb; }
+    .achievement-level {
+      padding: 2rem 1.5rem;
+      border-right: var(--border);
+      font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--gray); display: flex; align-items: center;
+    }
+    .achievement-content {
+      padding: 2rem 3rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .achievement-title {
+      font-family: var(--font-display);
+      font-size: 1.6rem; font-weight: 400;
+    }
+    .achievement-badge {
+      font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+      border: var(--border); padding: 0.3rem 0.8rem;
+      white-space: nowrap;
+    }
+
+    /* ─── ACTIVITIES ─── */
+    .year-block { border-bottom: var(--border); }
+    .year-header {
+      display: grid; grid-template-columns: 80px 1fr;
+      border-bottom: var(--border);
+      background: var(--black); color: var(--white);
+    }
+    .year-number {
+      padding: 1.5rem;
+      font-family: var(--font-display);
+      font-size: 2rem; font-weight: 300;
+      border-right: 1px solid #333;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .year-label {
+      padding: 1.5rem 2rem;
+      font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+      display: flex; align-items: center; color: #aaa;
+    }
+    .semester-header {
+      padding: 1rem 2rem;
+      font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gray); border-bottom: var(--border);
+      background: #f0efeb;
+    }
+    .activity-item {
+      display: grid; grid-template-columns: 140px 1fr 1fr;
+      border-bottom: 1px solid #ddd;
+      transition: background 0.2s;
+    }
+    .activity-item:hover { background: #fafaf7; }
+    .activity-date {
+      padding: 1.5rem 1.2rem;
+      border-right: var(--border);
+      font-size: 11px; color: var(--gray);
+      display: flex; align-items: flex-start;
+    }
+    .activity-name {
+      padding: 1.5rem 2rem;
+      border-right: 1px solid #ddd;
+    }
+    .activity-name h4 {
+      font-family: var(--font-display);
+      font-size: 1.05rem; font-weight: 400; margin-bottom: 0.4rem;
+    }
+    .activity-name p { font-size: 11px; color: #555; line-height: 1.5; }
+    .activity-reflection {
+      padding: 1.5rem 2rem;
+    }
+    .activity-reflection-label {
+      font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--gray); margin-bottom: 0.4rem;
+    }
+    .activity-reflection p { font-size: 11px; color: #444; line-height: 1.6; font-style: italic; }
+
+    /* ─── LOADING STATE ─── */
+    .loading-row {
+      padding: 3rem; text-align: center;
+      color: var(--gray); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+    }
+    .dot-anim::after {
+      content: '...';
+      animation: dots 1.5s steps(4, end) infinite;
+    }
+    @keyframes dots {
+      0%,20%{content:''}30%,50%{content:'.'}60%,80%{content:'..'}90%,100%{content:'...'}
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 2rem 4rem;
+      border-top: var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray);
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      header { padding: 1rem 1.2rem; }
+      nav a { padding: 0.4rem 0.6rem; font-size: 10px; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-right { min-height: 250px; }
+      .hero-left { padding: 3rem 1.5rem; }
+      .intro-section { grid-template-columns: 1fr; }
+      .intro-label { writing-mode: horizontal-tb; padding: 1.5rem; border-right: none; border-bottom: var(--border); }
+      .intro-body { padding: 2rem 1.5rem; }
+      .page-header { padding: 3rem 1.5rem 1.5rem; }
+      .achievement-item { grid-template-columns: 1fr; }
+      .achievement-level { border-right: none; border-bottom: var(--border); padding: 1rem 1.5rem; writing-mode: horizontal-tb; }
+      .achievement-content { padding: 1.5rem; flex-direction: column; align-items: flex-start; gap: 0.8rem; }
+      .activity-item { grid-template-columns: 1fr; }
+      .activity-date { border-right: none; border-bottom: 1px solid #eee; padding: 1rem 1.5rem; }
+      .activity-name { border-right: none; border-bottom: 1px solid #eee; padding: 1rem 1.5rem; }
+      .activity-reflection { padding: 1rem 1.5rem; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; padding: 1.5rem; }
+    }
+
+    /* ─── FIREBASE FALLBACK MSG ─── */
+    .firebase-notice {
+      margin: 1rem 4rem;
+      padding: 1rem 1.5rem;
+      border: var(--border);
+      background: #f0efeb;
+      font-size: 11px;
+      color: #555;
+      display: none;
+    }
+    .firebase-notice.show { display: block; }
+    .firebase-notice strong { color: var(--black); }
+  </style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader"><span class="loader-text">LOADING</span></div>
+
+<!-- HEADER -->
+<header>
+  <a class="logo" href="#" onclick="showPage('home')">Chris<em>'</em> <span>E-Portfolio</span></a>
+  <nav>
+    <a href="#" onclick="showPage('home')" id="nav-home" class="active">Intro</a>
+    <a href="#" onclick="showPage('achievements')" id="nav-achievements">Achievements</a>
+    <a href="#" onclick="showPage('activities')" id="nav-activities">Activities</a>
+  </nav>
+</header>
+
+<!-- FIREBASE CONFIG NOTICE -->
+<div id="firebase-notice" class="firebase-notice">
+  <strong>Firebase not configured.</strong> Replace the Firebase config in the &lt;script&gt; section with your project's credentials to load live data.
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: HOME
+════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+  <section class="hero">
+    <div class="hero-left">
+      <div>
+        <p class="hero-eyebrow">SISC Hallmarks — E-Portfolio</p>
+        <h1 class="hero-name">
+          Chris<br>
+          <em>Magbuhos</em>
+        </h1>
+        <p class="hero-desc" id="home-desc">
+          A student of Southville who tries to be a good student there.
+          By choosing Southville, he hopes that he will land on a good future.
+        </p>
+        <span class="hero-tag">BSIT — Southville International School</span>
+      </div>
+      <div style="margin-top:3rem; font-size:10px; letter-spacing:0.15em; color:var(--gray); text-transform:uppercase;">
+        Updated every Tuesdays
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-grid"></div>
+      <div class="hero-center-text">
+        <h2>Hallmarks<br>Portfolio</h2>
+        <p>Achievements · Activities · Growth</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="intro-section">
+    <div class="intro-label">Introduction</div>
+    <div class="intro-body">
+      <p id="home-intro">
+        Before a good future happens, a student of Southville must practice
+        how to follow the rules, and how to be a good student there.
+        This e-portfolio lists all of his achievements and activities
+        for SISC Hallmarks.
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Chris Magbuhos — SISC Hallmarks</span>
+    <span id="footer-year"></span>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: ACHIEVEMENTS
+════════════════════════════════════════ -->
+<div id="page-achievements" class="page">
+  <div class="page-header">
+    <p class="page-header-eyebrow">Academic Record</p>
+    <h1>Achievements</h1>
+  </div>
+
+  <div id="achievements-list" class="achievements-list">
+    <div class="loading-row"><span class="dot-anim">Loading</span></div>
+  </div>
+
+  <footer>
+    <span>Chris Magbuhos — SISC Hallmarks</span>
+    <span id="footer-year-2"></span>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: ACTIVITIES
+════════════════════════════════════════ -->
+<div id="page-activities" class="page">
+  <div class="page-header">
+    <p class="page-header-eyebrow">Learning Journey</p>
+    <h1>Activities</h1>
+  </div>
+
+  <div id="activities-list">
+    <div class="loading-row"><span class="dot-anim">Loading</span></div>
+  </div>
+
+  <footer>
+    <span>Chris Magbuhos — SISC Hallmarks</span>
+    <span id="footer-year-3"></span>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     FIREBASE + LOGIC
+════════════════════════════════════════ -->
+<script type="module">
+  // ══════════════════════════════════════════
+  // 🔥 REPLACE THIS WITH YOUR FIREBASE CONFIG
+  // ══════════════════════════════════════════
+  const firebaseConfig = {
+    apiKey:            "YOUR_API_KEY",
+    authDomain:        "YOUR_PROJECT.firebaseapp.com",
+    projectId:         "YOUR_PROJECT_ID",
+    storageBucket:     "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId:             "YOUR_APP_ID"
+  };
+  // ══════════════════════════════════════════
+
+  // ── Fallback data (shown when Firebase is not configured) ──
+  const FALLBACK = {
+    home: {
+      desc: "A student of Southville who doesn't stand out that much but tries to be a good student there. By choosing Southville, he hopes that he will land on a good future for him.",
+      intro: "Before that happens, a student of Southville must practice how to follow the rules, and how to be a good student there. This e-portfolio lists all of his achievements and activities for SISC Hallmarks."
+    },
+    achievements: [
+      { level: "Grade 2–6",              title: "With Honors" },
+      { level: "Grade 7–10",             title: "With Honors" },
+      { level: "Grade 11 – 2nd Quarter", title: "With Honors" },
+      { level: "Grade 12",               title: "With Honors" },
+      { level: "BSIT 1st Year – Present",title: "Dean's Lister" }
+    ],
+    activities: [
+      {
+        year: "1st Year", semester: "1st Semester",
+        items: [
+          { date: "Sep 23, 2024", name: "Activity #01: Psalm 23 of My Life", desc: "Reveals my shepherd and lamb side. Teaches me how to change perspective depending on situations.", reflection: "God will be my always ultimate shepherd and I am just His lamb. Depending on the situations, I need to also be a shepherd." },
+          { date: "Oct 5, 2024",  name: "My Personal Credo", desc: "Reveals my beliefs in life that supports my breathing in the world.", reflection: "No man is really an island. I have to depend on others and others depend on me — a give and take mode of world." },
+          { date: "Oct 15, 2024", name: "My Own Logo", desc: "Reveals my character and beliefs in life.", reflection: "There are many things I need to discover. I want to recognize myself fully so I can improve in the future." },
+          { date: "Oct 29, 2024", name: "My Own Vision-Mission Statements Toward Goal Setting", desc: "Reveals about my future aspirations and goals in life.", reflection: "It's important to have vision, mission, and goals in life. With them, I can properly lay out my aspirations." },
+          { date: "Nov 11, 2024", name: "My Song and Answer to Questions", desc: "Made me write a song about the environment.", reflection: "I emphasized the care for the environment, the dangers of climate change, and the importance of continued advocacy." },
+          { date: "Nov 18, 2024", name: "5s in My Life", desc: "I picked my way of studying as the subject for improvement using 5s.", reflection: "5s makes things organized and planned, helping you finish activities faster and more efficiently." },
+          { date: "Nov 19, 2024", name: "Discussion Forum", desc: "Writing to someone who has impacted my life.", reflection: "It's very important to be grateful to someone who has impacted your life positively." },
+          { date: "Nov 25, 2024", name: "5Cs Bingo", desc: "Known my strengths and weaknesses.", reflection: "Knowing your strengths and weaknesses helps identify areas that need focus for efficient development." },
+          { date: "Jan 19, 2025", name: "Multiple Intelligences", desc: "Discovered my multiple intelligences.", reflection: "One of my intelligences is musical and another is kinesthetic. I want to improve my learnings using these." },
+          { date: "Jan 20, 2025", name: "5-Year Strategic Plan", desc: "Created my 5-year strategic plan.", reflection: "My most dreamed country is Japan. That's the main goal of my 5-year strategic plan." }
+        ]
+      },
+      {
+        year: "1st Year", semester: "2nd Semester",
+        items: [
+          { date: "Mar 4, 2024",  name: "Discussion Forum: Values", desc: "Discussed how society should prioritize values.", reflection: "One thing I'd like society to improve is their ever changing approach to values." },
+          { date: "Mar 4, 2024",  name: "Activity 1: Values", desc: "Discussed the things that I value the most.", reflection: "I realized that there are many things important to me. I hope I won't forget about these." },
+          { date: "Mar 4, 2024",  name: "Activity 2: Value I Prioritize the Most", desc: "Discussed the value I prioritize most.", reflection: "There are many things important to me. I hope I won't forget about these and continue to value them." },
+          { date: "Mar 11, 2024", name: "Discussion Forum", desc: "Discussed that laws should not always reflect moral values.", reflection: "Laws shouldn't always reflect moral values because they can be made for another purpose." },
+          { date: "Mar 17, 2024", name: "Activity 3: Mi Character", desc: "Presented the character I admire the most.", reflection: "TV Dramas can also inspire us to be better people. Even if fictional, we should put into use the learnings." },
+          { date: "Mar 17, 2024", name: "Activity 4: Me to Others, Me to Myself", desc: "Discussed sub-character dimensions and their implications.", reflection: "The different sub-character dimensions should always be used for the betterment of others alongside oneself." },
+          { date: "Mar 22, 2024", name: "Activity 5: The 5Cs in my Life", desc: "Presented how I would use each of the 5Cs.", reflection: "5Cs is very valuable in life. It helps me develop as a person and be helpful in society and the economy." },
+          { date: "Mar 22, 2024", name: "Activity 6: Do you 'C' what I 'C'?", desc: "Described which C in the 5Cs I identify with most.", reflection: "I believe all of these 5Cs can start with the person's commitment to achieve." },
+          { date: "Apr 28, 2025", name: "Activity: Journal Writing", desc: "Described the values making life more meaningful.", reflection: "Everyone has their own definition of a happy life. But everyone agrees having a happy life is the ultimate goal." },
+          { date: "Jun 9, 2025",  name: "Activity 5: Values in Action / Values Stories", desc: "Created stories for each different values.", reflection: "The aim is not only to be aware but also to be more conscious of my day to day behaviors." },
+          { date: "Jun 10, 2025", name: "Activity: Samples of the Strategies", desc: "Formulated some of my different strategies for various situations.", reflection: "There are strategies I can still improve and some that are already good. I need to review them regularly." },
+          { date: "Jun 17, 2025", name: "Discussion Forum: Moral Development Journey", desc: "Reflected on my moral development journey.", reflection: "Moral development is a vital part of every human being. It makes every human become strong to counter challenges." },
+          { date: "Jun 23, 2025", name: "Weekly Assignment", desc: "Reflected on my moral development journey with the IC subject.", reflection: "Thank you for IC subject for teaching me about moral development." }
+        ]
+      },
+      {
+        year: "2nd Year", semester: "1st Semester",
+        items: [
+          { date: "Sep 12, 2025", name: "Self-Evaluation: Emotional Quotient (1), (2)", desc: "Measures my tendencies and abilities within Emotional Intelligence areas.", reflection: "No separate reflection — the activity already includes one." },
+          { date: "Sep 12, 2025", name: "Johari Window", desc: "Exposes different quadrants — those known to myself and those supplied by others.", reflection: "I have learned different aspects of myself including those I don't know. These qualities must be used for the good of others." },
+          { date: "Oct 2, 2025",  name: "Self Awareness Reflection Based on the Big 5 (1), (2)", desc: "Provides information about my OCEAN aspects.", reflection: "My neuroticism is high. I must improve this to face different walls in the future, especially for my mental and emotional side." },
+          { date: "Nov 13, 2025", name: "Discussion Forum Self Management", desc: "Realized how effective self management impacts relationships.", reflection: "I hope other people also make effort to improve their self management skills in order to have a good relationship with me." },
+          { date: "Nov 13, 2025", name: "The Resilience Scale", desc: "Assessment of personal resilience.", reflection: "" },
+          { date: "Nov 19, 2025", name: "Perceived Stress Scale", desc: "Determined my stress level.", reflection: "I have a moderate stress level. It can easily escalate to high or tone down to low. It all depends on what I will do with it." },
+          { date: "Nov 19, 2025", name: "2026 New Year's Resolution", desc: "Contemplated and focused on the good things in the future.", reflection: "I have contemplated and focused more on the good things in the future; enjoying my life." },
+          { date: "Nov 19, 2025", name: "What Type of Communicator Are You?", desc: "Learned what type of communicator I am.", reflection: "I am more of an assertive communicator. It comes with benefits and demerits so I must adjust the assertiveness per situation." },
+          { date: "Nov 23, 2025", name: "Self Management Activity", desc: "Realized how self management skills can improve personal growth and academic success.", reflection: "Self management has an impact on personal growth and academic success, and it is something that needs to be considered." },
+          { date: "Nov 23, 2025", name: "Person with a Heart", desc: "Talked about my major inspiration in senior high school.", reflection: "The experience taught me that unexpected things might happen anytime and I should look forward to it." }
+        ]
+      },
+      {
+        year: "2nd Year", semester: "2nd Semester",
+        items: [
+          { date: "Mar 21, 2026", name: "Week 2: Reflection", desc: "2nd semester reflection.", reflection: "" },
+          { date: "Mar 21, 2026", name: "Week 3: Reflection", desc: "2nd semester reflection.", reflection: "" },
+          { date: "Mar 21, 2026", name: "Week 3: Locus Test Result", desc: "Locus of control test result.", reflection: "" }
+        ]
+      }
+    ]
+  };
+
+  // ── Navigation ──
+  window.showPage = function(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.getElementById('nav-' + page).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // ── Render helpers ──
+  function renderAchievements(list) {
+    const container = document.getElementById('achievements-list');
+    if (!list || list.length === 0) {
+      container.innerHTML = '<div class="loading-row">No achievements found.</div>';
+      return;
+    }
+    container.innerHTML = list.map(a => `
+      <div class="achievement-item">
+        <div class="achievement-level">${a.level}</div>
+        <div class="achievement-content">
+          <span class="achievement-title">${a.title}</span>
+          <span class="achievement-badge">Awarded</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderActivities(yearGroups) {
+    const container = document.getElementById('activities-list');
+    if (!yearGroups || yearGroups.length === 0) {
+      container.innerHTML = '<div class="loading-row">No activities found.</div>';
+      return;
+    }
+    container.innerHTML = yearGroups.map((group, gi) => `
+      <div class="year-block" style="animation: fadeUp 0.5s ease ${gi * 0.1}s both">
+        <div class="year-header">
+          <div class="year-number">${gi + 1}</div>
+          <div class="year-label">${group.year} — ${group.semester}</div>
+        </div>
+        <div class="semester-header">${group.semester}</div>
+        ${group.items.map(item => `
+          <div class="activity-item">
+            <div class="activity-date">${item.date || ''}</div>
+            <div class="activity-name">
+              <h4>${item.name}</h4>
+              <p>${item.desc || ''}</p>
+            </div>
+            <div class="activity-reflection">
+              <div class="activity-reflection-label">Reflection</div>
+              <p>${item.reflection || '<em style="color:#bbb">—</em>'}</p>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `).join('');
+  }
+
+  // ── Firebase init ──
+  async function initFirebase() {
+    const isConfigured = firebaseConfig.apiKey !== "YOUR_API_KEY";
+
+    if (!isConfigured) {
+      // Show notice and use fallback data
+      document.getElementById('firebase-notice').classList.add('show');
+      document.getElementById('home-desc').textContent = FALLBACK.home.desc;
+      document.getElementById('home-intro').textContent = FALLBACK.home.intro;
+      renderAchievements(FALLBACK.achievements);
+      renderActivities(FALLBACK.activities);
+      hideLoader();
+      return;
+    }
+
+    try {
+      const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
+      const { getFirestore, collection, getDocs, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      // ── Home content ──
+      try {
+        const homeDoc = await getDoc(doc(db, 'content', 'home'));
+        if (homeDoc.exists()) {
+          const d = homeDoc.data();
+          if (d.desc)  document.getElementById('home-desc').textContent = d.desc;
+          if (d.intro) document.getElementById('home-intro').textContent = d.intro;
+        }
+      } catch(e) {
+        console.warn('Could not load home content:', e);
+      }
+
+      // ── Achievements ──
+      try {
+        const snap = await getDocs(collection(db, 'achievements'));
+        const list = [];
+        snap.forEach(d => list.push(d.data()));
+        // Sort by order field if present
+        list.sort((a, b) => (a.order || 0) - (b.order || 0));
+        renderAchievements(list.length ? list : FALLBACK.achievements);
+      } catch(e) {
+        console.warn('Could not load achievements:', e);
+        renderAchievements(FALLBACK.achievements);
+      }
+
+      // ── Activities ──
+      try {
+        const snap = await getDocs(collection(db, 'activityGroups'));
+        const groups = [];
+        snap.forEach(d => groups.push(d.data()));
+        groups.sort((a, b) => (a.order || 0) - (b.order || 0));
+        renderActivities(groups.length ? groups : FALLBACK.activities);
+      } catch(e) {
+        console.warn('Could not load activities:', e);
+        renderActivities(FALLBACK.activities);
+      }
+
+    } catch(e) {
+      console.warn('Firebase init failed:', e);
+      document.getElementById('firebase-notice').classList.add('show');
+      renderAchievements(FALLBACK.achievements);
+      renderActivities(FALLBACK.activities);
+    }
+
+    hideLoader();
+  }
+
+  function hideLoader() {
+    setTimeout(() => {
+      document.getElementById('loader').classList.add('hidden');
+    }, 600);
+  }
+
+  // ── Footer year ──
+  const yr = new Date().getFullYear();
+  document.getElementById('footer-year').textContent = yr;
+  document.getElementById('footer-year-2').textContent = yr;
+  document.getElementById('footer-year-3').textContent = yr;
+
+  initFirebase();
+</script>
+</body>
+</html>
